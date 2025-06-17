@@ -12,7 +12,7 @@ Exploratory Data Analysis & Visualization
 Correlation Heatmaps & Time-Series Analysis
 
 ## Datasets
-All datasets used in this project are stored in the /Project Datasets folder and include:
+All datasets used in this project are stored in the /AI4ALL Project Datasets folder and include:
 Historical stock prices (AAPL, MSFT, INTC, etc.)
 U.S. macroeconomic indicators (Inflation, GDP, Unemployment, Fed Funds Rate)
 Global inflation trends by country
