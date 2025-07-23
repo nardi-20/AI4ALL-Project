@@ -1,5 +1,5 @@
 # AI-Driven Stock Investment Recommendation System
-As part of the AI4ALL Ignite Fellowship, this project explores how supervised machine learning can predict short-term stock actions—Buy, Hold, or Sell—using historical stock price patterns and macroeconomic data. We focused on tech companies like Apple, Microsoft, Intel, and IBM, analyzing daily open and close prices in tandem with indicators like interest rates, inflation, and unemployment.
+As part of the AI4ALL Ignite Fellowship, this project explores how supervised machine learning can predict short-term stock actions (Buy, Hold, or Sell) using historical stock price patterns and macroeconomic data. We focused on tech companies like Apple, Microsoft, Intel, and IBM, analyzing daily open and close prices in tandem with indicators like interest rates, inflation, and unemployment.
 
 ## Research Question
 Can machine learning models accurately predict daily stock actions (Buy, Hold, Sell) for major tech companies based on historical price trends and macroeconomic indicators?
