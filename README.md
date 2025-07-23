@@ -1,29 +1,33 @@
-# AI-Driven Stock Investment Recommendation System
+#AI-Driven Stock Investment Recommendation System
+As part of the AI4ALL Ignite Fellowship, this project explores how supervised machine learning can predict short-term stock actions—Buy, Hold, or Sell—using historical stock price patterns and macroeconomic data. We focused on tech companies like Apple, Microsoft, Intel, and IBM, analyzing daily open and close prices in tandem with indicators like interest rates, inflation, and unemployment.
 
-This project uses supervised machine learning to analyze historical stock prices and macroeconomic indicators in order to predict investment risk and return. By leveraging financial data from companies like Apple and Microsoft alongside economic factors such as inflation, interest rates, GDP growth, and unemployment, the model provides actionable recommendations: Invest, Hold, or Sell.
+##Research Question
+Can machine learning models accurately predict daily stock actions (Buy, Hold, Sell) for major tech companies based on historical price trends and macroeconomic indicators?
 
-## Research Question
-Can machine learning models accurately predict daily investment risk and return for major U.S. companies and provide reliable, real-time recommendations based on historical financial and macroeconomic trends?
+##Methods
 
-## Methods
-Supervised Learning (Classification & Regression)
-Feature Engineering (Lagging, Normalization, Rolling Correlation)
-Exploratory Data Analysis & Visualization
-Correlation Heatmaps & Time-Series Analysis
+- Supervised Learning (Logistic Regression, XGBoost)
+- Feature Engineering (Lagged prices, Moving averages, Rolling correlations)
+- Exploratory Data Analysis & Visualization
+- Correlation Analysis between stock performance and economic trends
 
-## Datasets
-All datasets used in this project are stored in the /AI4ALL Project Datasets folder and include:
-Historical stock prices (AAPL, MSFT, INTC, etc.)
-U.S. macroeconomic indicators (Inflation, GDP, Unemployment, Fed Funds Rate)
-Global inflation trends by country
+##Datasets
+Located in the `/AI4ALL Project Datasets` directory, our data sources include:
 
-## Key Features
-Visualization of economic indicators vs. stock performance
-Rolling and lagged correlation analysis
-Normalization of diverse financial metrics
-Machine learning-ready merged datasets
+- Historical stock prices (AAPL, MSFT, INTC, IBM)
+- U.S. economic indicators (CPI, GDP, Unemployment, Federal Funds Rate)
+- Global inflation rates by country
 
-## Potential Model Use Cases
-Real-time stock advice apps
-Portfolio optimization dashboards
-Educational tools for finance students and retail investors
+##Key Features
+
+- Daily prediction of Buy/Hold/Sell actions
+- Rolling and lagged correlation visualizations between stock and macro trends
+- Feature normalization and merged datasets ready for modeling
+- Model performance metrics to evaluate predictive accuracy
+
+##Potential Applications
+
+- Real-time stock recommendation tools
+- Educational dashboards for finance learners
+- Market insight visualizations for beginner investors
+
