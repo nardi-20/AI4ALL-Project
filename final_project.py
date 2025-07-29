@@ -1,4 +1,3 @@
-# --- IMPORTS ---
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,7 +10,6 @@ from sklearn.ensemble import VotingClassifier
 from sklearn.metrics import classification_report, confusion_matrix
 import ta
 
-# --- DATA LOADING ---
 appleDF = pd.read_csv('AI4ALL Project Datasets/AAPL.csv')
 intelDF = pd.read_csv('AI4ALL Project Datasets/INTC.csv')
 msftDF = pd.read_csv('AI4ALL Project Datasets/MSFT.csv')
@@ -19,14 +17,12 @@ ibmDF = pd.read_csv('AI4ALL Project Datasets/IBM.csv')
 sp500DF = pd.read_csv('AI4ALL Project Datasets/GSPC.csv')
 interestRateDF = pd.read_csv('AI4ALL Project Datasets/federalReserveInterestRates.csv')
 
-# --- PREPROCESSING ---
 for df in [appleDF, intelDF, msftDF, ibmDF, sp500DF]:
     df['Date'] = pd.to_datetime(df['Date'], utc=True).dt.tz_localize(None)
 
 interestRateDF = interestRateDF.interpolate()
 interestRateDF['Date'] = pd.to_datetime(interestRateDF[['Year', 'Month', 'Day']])
 
-# --- UTILITY FUNCTIONS ---
 def normalize(series):
     return (series - series.min()) / (series.max() - series.min())
 
@@ -104,7 +100,6 @@ def correlation_matrix(df_dict, price_type='Open'):
     merged.dropna(inplace=True)
     return merged.drop(columns='Date').corr()
 
-# --- MODEL FUNCTIONS ---
 def generate_labels(df, column='Close', days_ahead=5, threshold=0.005):
     df['FuturePrice'] = df[column].shift(-days_ahead)
     df['Return'] = (df['FuturePrice'] - df[column]) / df[column]
