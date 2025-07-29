@@ -181,19 +181,36 @@ if st.button("Train Ensemble Model"):
     model, X_test, y_test, reverse_map = build_model(df)
     test_model(model, X_test, y_test, reverse_map, stock_name)
 
-    # Make prediction on the most recent row
-    last_row = df.tail(1)
-    last_features = generate_features(df).tail(1)[[
-        'Close_Lag1', 'Close_Lag2', 'MA5', 'MA10',
-        'Momentum_5', 'Momentum_10', 'Daily_Return', 'Volume_Lag1', 'OBV'
-    ]]
+    # Save model in session state so it's accessible by other buttons
+    st.session_state["model"] = model
+    st.session_state["reverse_map"] = reverse_map
+    st.success("Model trained and saved!")
 
-    if last_features.isnull().values.any():
-        st.warning("Not enough data for a real-time recommendation.")
+
+if st.button("Predict Latest Movement"):
+    if "model" not in st.session_state:
+        st.error("Please train the model first.")
     else:
-        predicted_class = model.predict(last_features)[0]
-        predicted_label = reverse_map[predicted_class]
-        action_map = {-1: "Sell", 0: "Hold", 1: "Buy"}
-        st.subheader("Investment Recommendation")
-        st.success(f"For **{stock_name}**, the model recommends: **{action_map[predicted_label]}**")
+        model = st.session_state["model"]
+        reverse_map = st.session_state["reverse_map"]
+        processed_df = generate_features(df)
+        last_features = processed_df.tail(1)[[
+            'Close_Lag1', 'Close_Lag2', 'MA5', 'MA10',
+            'Momentum_5', 'Momentum_10', 'Daily_Return', 'Volume_Lag1', 'OBV'
+        ]]
 
+        if last_features.isnull().values.any():
+            st.warning("Not enough recent data for prediction.")
+        else:
+            predicted_class = model.predict(last_features)[0]
+            predicted_label = reverse_map[predicted_class]
+            action_map = {-1: "Sell", 0: "Hold", 1: "Buy"}
+
+            # Show as a nice table
+            recommendation_df = pd.DataFrame({
+                'Stock': [stock_name],
+                'Date': [df['Date'].iloc[-1]],
+                'Recommended Action': [action_map[predicted_label]]
+            })
+            st.subheader("Investment Recommendation")
+            st.dataframe(recommendation_df)
