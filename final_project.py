@@ -184,7 +184,7 @@ if st.button("Train Ensemble Model"):
     # Save model in session state so it's accessible by other buttons
     st.session_state["model"] = model
     st.session_state["reverse_map"] = reverse_map
-    st.success("Model trained and saved!")
+    st.success("Model trained and saved.")
 
 
 if st.button("Predict Latest Movement"):
@@ -206,7 +206,6 @@ if st.button("Predict Latest Movement"):
             predicted_label = reverse_map[predicted_class]
             action_map = {-1: "Sell", 0: "Hold", 1: "Buy"}
 
-            # Show as a nice table
             recommendation_df = pd.DataFrame({
                 'Stock': [stock_name],
                 'Date': [df['Date'].iloc[-1]],
@@ -214,3 +213,29 @@ if st.button("Predict Latest Movement"):
             })
             st.subheader("Investment Recommendation")
             st.dataframe(recommendation_df)
+
+
+if st.button("Recommended User Action"):
+    if "model" not in st.session_state:
+        st.error("Please train the model first.")
+    else:
+        model = st.session_state["model"]
+        reverse_map = st.session_state["reverse_map"]
+        processed_df = generate_features(df)
+        last_features = processed_df.tail(1)[[
+            'Close_Lag1', 'Close_Lag2', 'MA5', 'MA10',
+            'Momentum_5', 'Momentum_10', 'Daily_Return', 'Volume_Lag1', 'OBV'
+        ]]
+
+        if last_features.isnull().values.any():
+            st.warning("Not enough recent data to provide guidance.")
+        else:
+            predicted_class = model.predict(last_features)[0]
+            predicted_label = reverse_map[predicted_class]
+            guidance_map = {
+                -1: f"Based on the latest market trends and technical indicators, it may be advisable to sell your position in {stock_name}.",
+                 0: f"The model indicates no strong signal for buying or selling. Holding your current position in {stock_name} may be the most prudent option at this time.",
+                 1: f"Recent data suggests that purchasing additional shares of {stock_name} may be beneficial, as the model predicts upward movement in the near future."
+            }
+            st.subheader("Model-Based Investment Guidance")
+            st.info(guidance_map[predicted_label])
