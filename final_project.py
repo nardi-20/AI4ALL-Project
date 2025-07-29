@@ -150,8 +150,11 @@ def test_model(model, X_test, y_test, reverse_map, stock_name):
     plt.tight_layout()
     st.pyplot(plt)
     plt.clf()
-    st.text(f"\nClassification Report for {stock_name}:")
-    st.text(classification_report(y_test_orig, y_pred_orig, target_names=labels))
+    report_dict = classification_report(y_test_orig, y_pred_orig, target_names=labels, output_dict=True)
+    report_df = pd.DataFrame(report_dict).transpose()
+
+    st.subheader(f"Classification Report for {stock_name}")
+    st.dataframe(report_df.style.format(precision=2))
 
 st.title("Stock Analysis & Investment Prediction")
 
