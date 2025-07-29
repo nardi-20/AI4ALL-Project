@@ -7,21 +7,18 @@ Original file is located at
     https://colab.research.google.com/drive/1dIUC5J4hb0-mkkm1KsL5BDG-bCRfsz_j
 """
 
-from google.colab import drive
-drive.mount('/content/drive')
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
 """Importing Datasets:"""
 
-appleDF = pd.read_csv('/content/drive/MyDrive/AI4ALL Project Datasets/AAPL.csv')
-intelDF= pd.read_csv('/content/drive/MyDrive/AI4ALL Project Datasets/INTC.csv')
-msftDF = pd.read_csv('/content/drive/My Drive/AI4ALL Project Datasets/MSFT.csv')
-ibmDF= pd.read_csv('/content/drive/MyDrive/AI4ALL Project Datasets/IBM.csv')
-sp500DF = pd.read_csv('/content/drive/My Drive/AI4ALL Project Datasets/GSPC.csv')
-interestRateDF = pd.read_csv('/content/drive/MyDrive/AI4ALL Project Datasets/federalReserveInterestRates.csv')
+appleDF = pd.read_csv('/AI4ALL Project Datasets/AAPL.csv')
+intelDF= pd.read_csv('/AI4ALL Project Datasets/INTC.csv')
+msftDF = pd.read_csv('AI4ALL Project Datasets/MSFT.csv')
+ibmDF= pd.read_csv('/AI4ALL Project Datasets/IBM.csv')
+sp500DF = pd.read_csv('/AI4ALL Project Datasets/GSPC.csv')
+interestRateDF = pd.read_csv('/AI4ALL Project Datasets/federalReserveInterestRates.csv')
 
 """# 1) Individual Stock Analysis
 
