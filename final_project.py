@@ -177,3 +177,20 @@ if st.button("Train Ensemble Model"):
     st.write("Training model...")
     model, X_test, y_test, reverse_map = build_model(df)
     test_model(model, X_test, y_test, reverse_map, stock_name)
+
+    # Make prediction on the most recent row
+    last_row = df.tail(1)
+    last_features = generate_features(df).tail(1)[[
+        'Close_Lag1', 'Close_Lag2', 'MA5', 'MA10',
+        'Momentum_5', 'Momentum_10', 'Daily_Return', 'Volume_Lag1', 'OBV'
+    ]]
+
+    if last_features.isnull().values.any():
+        st.warning("Not enough data for a real-time recommendation.")
+    else:
+        predicted_class = model.predict(last_features)[0]
+        predicted_label = reverse_map[predicted_class]
+        action_map = {-1: "Sell", 0: "Hold", 1: "Buy"}
+        st.subheader("Investment Recommendation")
+        st.success(f"For **{stock_name}**, the model recommends: **{action_map[predicted_label]}**")
+
