@@ -212,12 +212,12 @@ if st.button("Get Investment Recommendation"):
             st.subheader("Investment Recommendation")
             st.dataframe(recommendation_df)
 
-            if st.checkbox("Show model-based guidance"):
-                guidance_map = {
-                    -1: f"Based on recent market behavior, it may be advisable to sell your position in {stock_name}.",
-                     0: f"The model does not indicate a strong signal to buy or sell. Maintaining your current position in {stock_name} may be the most prudent decision at this time.",
-                     1: f"Current indicators suggest that buying additional shares of {stock_name} may be advantageous, given the model's prediction of upward movement."
-                }
-                st.subheader("Model-Based Guidance")
-                st.info(guidance_map[predicted_label])
+            guidance_map = {
+                -1: f"Based on recent market behavior, it may be advisable to sell your position in {stock_name}.",
+                0: f"The model does not indicate a strong signal to buy or sell. Maintaining your current position in {stock_name} may be the most prudent decision at this time.",
+                1: f"Current indicators suggest that buying additional shares of {stock_name} may be advantageous, given the model's prediction of upward movement."
+            }
+            
+            st.subheader("Model-Based Guidance")
+            st.info(guidance_map[predicted_label])
 
