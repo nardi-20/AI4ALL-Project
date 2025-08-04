@@ -45,7 +45,7 @@ Located in the /AI4ALL Project Datasets directory, our data sources include:
 2) Install required packages:
       pip install -r requirements.txt
 3) Run the Streamlit app:
-      streamlit run app.py
+      streamlit run final_project.py
 
 Ensure the /AI4ALL Project Datasets folder is in the root directory. The app will load and display real-time stock recommendations based on preprocessed and merged datasets.
 
