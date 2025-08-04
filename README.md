@@ -41,14 +41,14 @@ Located in the /AI4ALL Project Datasets directory, our data sources include:
 ## Installation & Usage
 1) Clone this repository:
 
-   >git clone [https://github.com/your-username/ai4all-stock-recommendation.git]> 
-   >> cd ai4all-stock-recommendation
+   > git clone [https://github.com/your-username/ai4all-stock-recommendation.git] 
+   > cd ai4all-stock-recommendation
 3) Install required packages:
 
-   >> pip install -r requirements.txt
+   > pip install -r requirements.txt
 5) Run the Streamlit app:
 
-   >> streamlit run final_project.py
+   > streamlit run final_project.py
 
 Ensure the /AI4ALL Project Datasets folder is in the root directory. The app will load and display real-time stock recommendations based on preprocessed and merged datasets.
 
