@@ -3,7 +3,7 @@ import os
 from kaggle.api.kaggle_api_extended import KaggleApi
 import zipfile
 
-def download_and_rename_kaggle_dataset(dataset_name, target_filename, download_path="data"):
+def download_and_rename_kaggle_dataset(dataset_name, target_filename, download_path="AI4ALL Project Datasets"):
     os.makedirs(download_path, exist_ok=True)
 
     api = KaggleApi()
@@ -24,5 +24,5 @@ def download_and_rename_kaggle_dataset(dataset_name, target_filename, download_p
             break
 
 if __name__ == "__main__":
-    dataset = "kalilurrahman/apple-stock-data-live-and-latest-from-ipo-date"  # Replace with your dataset
+    dataset = "nikhil1e9/netflix-stock-price?select=APPLE_daily.csv"  # Replace with your dataset
     download_and_rename_kaggle_dataset(dataset, target_filename="AAPL.csv")
