@@ -183,6 +183,8 @@ def test_model(model, X_test, y_test, reverse_map, stock_name):
     st.dataframe(report_df.style.format(precision=2))
 
 st.title("Stock Analysis & Investment Prediction")
+st.subheader("Please click each button in order of appearance to successfully get your investment recommendation")
+
 
 stock_options = {
     'Apple (AAPL)': appleDF,
