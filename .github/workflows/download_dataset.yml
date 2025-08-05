@@ -29,7 +29,7 @@ jobs:
 
     - name: Run dataset download script
       run: |
-        python final_project.py  # replace with your actual script name
+        python download.py  # replace with your actual script name
 
     - name: Commit and push if dataset changed
       run: |
