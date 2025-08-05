@@ -26,6 +26,8 @@ def download_and_rename_kaggle_dataset(dataset_name, target_filename, download_p
     # Find the first CSV file and rename it to the target name
     for file in os.listdir(download_path):
         if file.endswith(".csv") and file != target_filename:
+            if os.path.exists(os.path.join(download_path, target_filename)):
+                os.remove(os.path.join(download_path, target_filename))
             original_path = os.path.join(download_path, file)
             new_path = os.path.join(download_path, target_filename)
             os.rename(original_path, new_path)
