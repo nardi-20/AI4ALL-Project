@@ -2,7 +2,7 @@ import os
 import zipfile
 from kaggle.api.kaggle_api_extended import KaggleApi
 
-def download_and_extract_file(dataset_name, filename, download_path="data"):
+def download_and_extract_file(dataset_name, filename, download_path="AI4ALL Project Datasets"):
     os.makedirs(download_path, exist_ok=True)
 
     api = KaggleApi()
