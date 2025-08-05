@@ -10,9 +10,11 @@ def download_and_extract_file(dataset_name, filename, download_path="data"):
 
     print(f"Downloading dataset: {dataset_name}")
 
-    # Download dataset as zip
-    zip_path = os.path.join(download_path, f"{dataset_name.replace('/', '_')}.zip")
+    # Download dataset as zip (saved as {dataset_slug}.zip)
     api.dataset_download_files(dataset_name, path=download_path, unzip=False)
+
+    # Correct zip_path according to Kaggle's naming
+    zip_path = os.path.join(download_path, f"{dataset_name.split('/')[-1]}.zip")
 
     print(f"Downloaded zip to {zip_path}")
 
@@ -26,7 +28,7 @@ def download_and_extract_file(dataset_name, filename, download_path="data"):
 
     # Optional: rename extracted file
     original_file_path = os.path.join(download_path, filename)
-    target_file_path = os.path.join(download_path, "AAPL.csv")  # or whatever name you want
+    target_file_path = os.path.join(download_path, "AAPL.csv")  # rename to desired filename
     if os.path.exists(original_file_path):
         os.rename(original_file_path, target_file_path)
         print(f"Renamed {filename} to AAPL.csv")
