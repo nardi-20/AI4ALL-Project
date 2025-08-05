@@ -2,7 +2,7 @@ name: Daily Kaggle Dataset Pull
 
 on:
   schedule:
-    - cron: '0 20 * * *'  # every day at 4 PM UTC
+    - cron: '57 20 * * *'  # every day at 4 PM UTC
   workflow_dispatch:     # also allow manual trigger
 
 jobs:
