@@ -1,0 +1,40 @@
+name: Daily Kaggle Dataset Pull
+
+on:
+  schedule:
+    - cron: '0 4 * * *'  # every day at 4 AM UTC
+  workflow_dispatch:     # also allow manual trigger
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        pip install kaggle
+
+    - name: Create kaggle.json
+      run: |
+        mkdir -p ~/.kaggle
+        echo "${{ secrets.KAGGLE_JSON }}" > ~/.kaggle/kaggle.json
+        chmod 600 ~/.kaggle/kaggle.json
+
+    - name: Run dataset download script
+      run: |
+        python final_project.py  # replace with your actual script name
+
+    - name: Commit and push if dataset changed
+      run: |
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+        git add data/
+        git diff --cached --quiet || git commit -m "Update dataset"
+        git push
