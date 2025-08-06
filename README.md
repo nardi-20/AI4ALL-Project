@@ -3,7 +3,7 @@ This project was developed during the AI4ALL Ignite Fellowship to explore how ar
 
 Focusing on major tech companies like Apple, Microsoft, Intel, and IBM, the system analyzes daily price patterns alongside indicators such as interest rates, inflation, and unemployment to generate real-time investment recommendations.
 
-Deployed StreamLit app can be found (here)[https://ai4all-project-7b.streamlit.app/]
+Deployed StreamLit app can be found [here](https://ai4all-project-7b.streamlit.app/)
 
 ## Research Question
 Can machine learning models accurately predict daily stock actions (Buy, Hold, Sell) for major tech companies based on historical price trends and macroeconomic indicators?
