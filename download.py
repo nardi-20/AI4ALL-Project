@@ -1,28 +1,39 @@
-
 import os
-from kaggle.api.kaggle_api_extended import KaggleApi
 import zipfile
+from kaggle.api.kaggle_api_extended import KaggleApi
 
-def download_and_rename_kaggle_dataset(dataset_name, target_filename, download_path="data"):
+def download_and_extract_file(dataset_name, filename, download_path="AI4ALL Project Datasets"):
     os.makedirs(download_path, exist_ok=True)
 
     api = KaggleApi()
     api.authenticate()
 
     print(f"Downloading dataset: {dataset_name}")
-    api.dataset_download_files(dataset_name, path=download_path, unzip=True)
 
-    # Find the first CSV file and rename it to the target name
-    for file in os.listdir(download_path):
-        if file.endswith(".csv") and file != target_filename:
-            if os.path.exists(os.path.join(download_path, target_filename)):
-                os.remove(os.path.join(download_path, target_filename))
-            original_path = os.path.join(download_path, file)
-            new_path = os.path.join(download_path, target_filename)
-            os.rename(original_path, new_path)
-            print(f"Renamed {file} to {target_filename}")
-            break
+    # Download dataset as zip (saved as {dataset_slug}.zip)
+    api.dataset_download_files(dataset_name, path=download_path, unzip=False)
+
+    # Correct zip_path according to Kaggle's naming
+    zip_path = os.path.join(download_path, f"{dataset_name.split('/')[-1]}.zip")
+
+    print(f"Downloaded zip to {zip_path}")
+
+    # Extract only the requested file
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        if filename in zip_ref.namelist():
+            print(f"Extracting {filename}")
+            zip_ref.extract(filename, path=download_path)
+        else:
+            print(f"File {filename} not found in dataset.")
+
+    # Optional: rename extracted file
+    original_file_path = os.path.join(download_path, filename)
+    target_file_path = os.path.join(download_path, "AAPL.csv")  # rename to desired filename
+    if os.path.exists(original_file_path):
+        os.rename(original_file_path, target_file_path)
+        print(f"Renamed {filename} to AAPL.csv")
 
 if __name__ == "__main__":
-    dataset = "kalilurrahman/apple-stock-data-live-and-latest-from-ipo-date"  # Replace with your dataset
-    download_and_rename_kaggle_dataset(dataset, target_filename="AAPL.csv")
+    dataset = "nikhil1e9/netflix-stock-price"
+    file_to_extract = "APPLE_daily.csv"  # exact filename inside dataset zip
+    download_and_extract_file(dataset, file_to_extract)

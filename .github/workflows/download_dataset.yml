@@ -19,12 +19,12 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install kaggle
+        pip install kaggle==1.5.12
 
     - name: Create kaggle.json
       run: |
         mkdir -p ~/.kaggle
-        echo "${{ secrets.KAGGLE_JSON }}" > ~/.kaggle/kaggle.json
+        echo '${{ secrets.KAGGLE_JSON }}' > ~/.kaggle/kaggle.json
         chmod 600 ~/.kaggle/kaggle.json
 
     - name: Run dataset download script
@@ -35,6 +35,6 @@ jobs:
       run: |
         git config --global user.name 'github-actions'
         git config --global user.email 'github-actions@github.com'
-        git add data/
+        git add "AI4ALL Project Datasets"
         git diff --cached --quiet || git commit -m "Update dataset"
         git push
