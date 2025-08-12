@@ -46,11 +46,42 @@ class ModelManager:
                 joblib.dump(model, f'models/{ticker}_model.pkl')
                 joblib.dump(reverse_map, f'models/{ticker}_reverse_map.pkl')
                 print(f"Model for {ticker} trained and saved")
+                
+                return model, X_test, y_test, reverse_map
             else:
                 print(f"Failed to train model for {ticker}")
                 return None, None, None, None
-        
-        return self.models[ticker]['model'], None, None, self.models[ticker]['reverse_map']
+        else:
+            print(f"Using existing model for {ticker}")
+            model = self.models[ticker]['model']
+            reverse_map = self.models[ticker]['reverse_map']
+            
+            try:
+                processed_df = self.generate_features(df)
+                processed_df = self.generate_labels(processed_df)
+                
+                processed_df.replace([np.inf, -np.inf], np.nan, inplace=True)
+                processed_df.dropna(inplace=True)
+                
+                features = ['Close_Lag1', 'Close_Lag2', 'MA5', 'MA10', 'Momentum_5', 
+                           'Momentum_10', 'Daily_Return', 'Volume_Lag1', 'OBV']
+                X = processed_df[features]
+                y = processed_df['Action']
+                
+                scaler = StandardScaler()
+                X_scaled = scaler.fit_transform(X)
+                
+                label_map = {-1: 0, 0: 1, 1: 2}
+                y_mapped = y.map(label_map)
+                
+                _, X_test, _, y_test = train_test_split(
+                    X_scaled, y_mapped, test_size=0.2, shuffle=False, random_state=42
+                )
+                
+                return model, X_test, y_test, reverse_map
+            except Exception as e:
+                print(f"Error generating test data for existing model: {e}")
+                return model, None, None, reverse_map
     
     def build_model(self, df):
         """Build and train model with improved parameters"""
@@ -137,6 +168,10 @@ class ModelManager:
         """Get model performance metrics"""
         if ticker not in self.models:
             print(f"No model available for {ticker}")
+            return None, None
+        
+        if X_test is None or y_test is None:
+            print(f"Test data not available for {ticker}")
             return None, None
         
         try:
