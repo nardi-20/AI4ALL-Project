@@ -45,7 +45,7 @@ def main():
     with tab1:
         st.header("Real-time Analysis")
         
-        if st.button("🔄 Fetch Latest Data", key="fetch_real_time"):
+        if st.button("Fetch Latest Data", key="fetch_real_time"):
             with st.spinner("Fetching latest data..."):
                 real_time_data = data_manager.fetch_real_time_data(ticker)
                 
