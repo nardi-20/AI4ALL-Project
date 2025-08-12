@@ -8,7 +8,26 @@ from sklearn.linear_model import LogisticRegression
 from xgboost import XGBClassifier
 from sklearn.ensemble import VotingClassifier
 from sklearn.metrics import classification_report, confusion_matrix
-import ta
+from real_time_data import RealTimeDataFetcher
+
+data_fetcher = RealTimeDataFetcher()
+
+@st.cache_resource
+def load_models():
+    models = {}
+    for ticker in ['AAPL', 'MSFT', 'INTC', 'IBM']:
+        try:
+            model = joblib.load(f'models/{ticker}_model.pkl')
+            reverse_map = joblib.load(f'models/{ticker}_reverse_map.pkl')
+            models[ticker] = {'model': model, 'reverse_map': reverse_map}
+        except FileNotFoundError:
+            st.error(f"Model for {ticker} not found. Please train the model first.")
+            return None
+    return models
+
+models = load_models()
+if models is None:
+    st.stop()
 
 appleDF = pd.read_csv('AI4ALL Project Datasets/AAPL.csv')
 intelDF = pd.read_csv('AI4ALL Project Datasets/INTC.csv')
