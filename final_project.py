@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import ta
-
+from sklearn.preprocessing import StandardScaler
 from visualizations import StockVisualizations
 from data_manager import DataManager
 from model_manager import ModelManager
@@ -64,44 +64,56 @@ def main():
                         real_time_data, 'Date', 'Close', 
                         f'{ticker} Close Price', f'{ticker} Latest Prices'
                     )
+
+                    historical_data = data_manager.get_historical_data(ticker)
+                    if historical_data is not None:
+                        model, _, _, reverse_map = model_manager.get_or_train_model(ticker, historical_data)
+                        if model is not None:
+                            # Get the prediction
                     
-                    features = data_manager.generate_features(real_time_data)
-                    latest_features = features.tail(1)[[
-                        'Close_Lag1', 'Close_Lag2', 'MA5', 'MA10',
-                        'Momentum_5', 'Momentum_10', 'Daily_Return', 'Volume_Lag1', 'OBV'
-                    ]]
+                            features = data_manager.generate_features(real_time_data)
+                            latest_features = features.tail(1)[[
+                                'Close_Lag1', 'Close_Lag2', 'MA5', 'MA10',
+                                'Momentum_5', 'Momentum_10', 'Daily_Return', 'Volume_Lag1', 'OBV'
+                            ]]
                     
-                    if not latest_features.isnull().values.any():
-                        predicted_label = model_manager.predict(ticker, latest_features)
+                            if not latest_features.isnull().values.any():
+                                predicted_label = model_manager.predict(ticker, latest_features)
                         
-                        if predicted_label is not None:
-                            action_map = {-1: "Sell", 0: "Hold", 1: "Buy"}
-                            recommendation = action_map[predicted_label]
+                                if predicted_label is not None:
+                                    action_map = {-1: "Sell", 0: "Hold", 1: "Buy"}
+                                    recommendation = action_map[predicted_label]
                             
-                            st.subheader("Investment Recommendation")
-                            col1, col2 = st.columns(2)
+                                    st.subheader("Investment Recommendation")
+                                    col1, col2 = st.columns(2)
                             
-                            with col1:
-                                st.metric(f"Recommendation for {ticker}", recommendation)
+                                    with col1:
+                                        st.metric(f"Recommendation for {ticker}", recommendation)
                             
-                            with col2:
-                                model = model_manager.models[ticker]['model']
-                                if hasattr(model, 'predict_proba'):
-                                    proba = model.predict_proba(latest_features)[0]
-                                    confidence = max(proba)
-                                    st.metric("Model Confidence", f"{confidence:.2%}")
+                                    with col2:
+                                        #Show confidence if you can
+                                        if hasattr(model, 'predict_proba'):
+                                            scaler = StandardScaler()
+                                            features_scaled = scaler.fit_transform(latest_features)
+                                            proba = model.predict_proba(features_scaled)[0]
+                                            confidence = max(proba)
+                                            st.metric("Model Confidence", f"{confidence:.2%}")
                             
-                            guidance_map = {
-                                -1: f"Based on recent market behavior, it may be advisable to sell your position in {ticker}.",
-                                0: f"The model does not indicate a strong signal to buy or sell. Maintaining your current position in {ticker} may be the most prudent decision at this time.",
-                                1: f"Current indicators suggest that buying additional shares of {ticker} may be advantageous, given the model's prediction of upward movement."
-                            }
+                                    guidance_map = {
+                                        -1: f"Based on recent market behavior, it may be advisable to sell your position in {ticker}.",
+                                        0: f"The model does not indicate a strong signal to buy or sell. Maintaining your current position in {ticker} may be the most prudent decision at this time.",
+                                        1: f"Current indicators suggest that buying additional shares of {ticker} may be advantageous, given the model's prediction of upward movement."
+                                    }
                             
-                            st.info(guidance_map[predicted_label])
+                                    st.info(guidance_map[predicted_label])
+                                else:
+                                    st.warning("Unable to make prediction at this time.")
+                            else:
+                                st.warning("Not enough recent data for prediction.")
                         else:
-                            st.warning("Model not available for this stock.")
+                            st.error("Failed to train model. Please try again.")
                     else:
-                        st.warning("Not enough recent data for prediction.")
+                        st.error("Historical data not available for training.")
                 else:
                     st.error("Failed to fetch latest data. Please try again.")
     
@@ -145,8 +157,9 @@ def main():
             st.dataframe(corr_matrix.style.background_gradient(cmap='coolwarm', vmin=-1, vmax=1))
             
             st.subheader("Feature Importance")
-            model = model_manager.models.get(ticker, {}).get('model')
-            if model is not None:
+            model_info = model_manager.models.get(ticker)
+            if model_info is not None:
+                model = model_info['model']
                 if hasattr(model, 'estimators_'):
                     for name, estimator in model.estimators:
                         if hasattr(estimator, 'feature_importances_'):
@@ -161,15 +174,25 @@ def main():
             
             st.subheader("Model Performance")
             if st.button("Show Model Performance", key="show_performance"):
-                temp_model, X_test, y_test, _ = model_manager.build_model(historical_data)
-                cm, report = model_manager.get_model_performance(ticker, X_test, y_test)
-                
-                if cm is not None and report is not None:
-                    viz.plot_confusion_matrix(cm, ticker)
+                historical_data = data_manager.get_historical_data(ticker)
+                if historical_data is not None:
+                    temp_model, X_test, y_test, _ = model_manager.get_or_train_model(ticker, historical_data)
+                    if temp_model is not None and X_test is not None and y_test is not None:
+                        cm, report = model_manager.get_model_performance(ticker, X_test, y_test)                
+                        if cm is not None and report is not None:
+                            viz.plot_confusion_matrix(cm, ticker)
                     
-                    st.write("Classification Report:")
-                    report_df = pd.DataFrame(report).transpose()
-                    st.dataframe(report_df.style.format(precision=2))
+                            # Show classification report
+                            st.write("Classification Report:")
+                            report_df = pd.DataFrame(report).transpose()
+                            st.dataframe(report_df.style.format(precision=2))
+
+                        else:
+                            st.warning("Unable to generate model performance metrics.")
+                    else:
+                        st.error("Failed to train model for perfomance analysis.")
+                else:
+                    st.error("Historical data not available for model training.")                    
 
 if __name__ == "__main__":
     main()
