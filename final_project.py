@@ -25,15 +25,12 @@ st.set_page_config(
     layout="wide"
 )
 
-# Main app
 def main():
     st.title("Stock Analysis & Investment Prediction")
     st.write("AI-driven stock predictions with real-time data analysis")
     
-    # Sidebar for controls
     st.sidebar.header("Controls")
     
-    # Stock selection
     stock_options = {
         'Apple (AAPL)': 'AAPL',
         'Microsoft (MSFT)': 'MSFT',
@@ -43,13 +40,11 @@ def main():
     selected_stock = st.sidebar.selectbox("Choose a company:", list(stock_options.keys()))
     ticker = stock_options[selected_stock]
     
-    # Main content area
     tab1, tab2, tab3 = st.tabs(["Real-time Analysis", "Historical Analysis", "Model Insights"])
     
     with tab1:
         st.header("Real-time Analysis")
         
-        # Fetch real-time data button
         if st.button("🔄 Fetch Latest Data", key="fetch_real_time"):
             with st.spinner("Fetching latest data..."):
                 real_time_data = data_manager.fetch_real_time_data(ticker)
@@ -69,7 +64,6 @@ def main():
                     if historical_data is not None:
                         model, _, _, reverse_map = model_manager.get_or_train_model(ticker, historical_data)
                         if model is not None:
-                            # Get the prediction
                     
                             features = data_manager.generate_features(real_time_data)
                             latest_features = features.tail(1)[[
@@ -91,7 +85,6 @@ def main():
                                         st.metric(f"Recommendation for {ticker}", recommendation)
                             
                                     with col2:
-                                        #Show confidence if you can
                                         if hasattr(model, 'predict_proba'):
                                             scaler = StandardScaler()
                                             features_scaled = scaler.fit_transform(latest_features)
@@ -176,21 +169,24 @@ def main():
             if st.button("Show Model Performance", key="show_performance"):
                 historical_data = data_manager.get_historical_data(ticker)
                 if historical_data is not None:
-                    temp_model, X_test, y_test, _ = model_manager.get_or_train_model(ticker, historical_data)
-                    if temp_model is not None and X_test is not None and y_test is not None:
-                        cm, report = model_manager.get_model_performance(ticker, X_test, y_test)                
-                        if cm is not None and report is not None:
-                            viz.plot_confusion_matrix(cm, ticker)
+                    with st.spinner("Analyzing model performance..."):
+                        temp_model, X_test, y_test, _ = model_manager.get_or_train_model(ticker, historical_data)
+                        st.write(f"Model loaded: {temp_model is not None}")
+                        st.write(f"X_test available: {X_test is not None}")
+                        st.write(f"y_test available: {y_test is not None}")
+                        if temp_model is not None and X_test is not None and y_test is not None:
+                            cm, report = model_manager.get_model_performance(ticker, X_test, y_test)                
+                            if cm is not None and report is not None:
+                                viz.plot_confusion_matrix(cm, ticker)
                     
-                            # Show classification report
-                            st.write("Classification Report:")
-                            report_df = pd.DataFrame(report).transpose()
-                            st.dataframe(report_df.style.format(precision=2))
+                                st.write("Classification Report:")
+                                report_df = pd.DataFrame(report).transpose()
+                                st.dataframe(report_df.style.format(precision=2))
 
+                            else:
+                                st.warning("Unable to generate model performance metrics.")
                         else:
-                            st.warning("Unable to generate model performance metrics.")
-                    else:
-                        st.error("Failed to train model for perfomance analysis.")
+                            st.error("Failed to train model for perfomance analysis.")
                 else:
                     st.error("Historical data not available for model training.")                    
 
