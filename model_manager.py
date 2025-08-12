@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import ta
 import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
@@ -116,3 +117,4 @@ class ModelManager:
             lambda x: 1 if x > threshold else (-1 if x < -threshold else 0)
         )
         return df
+
